@@ -20,6 +20,10 @@ int main() {
     n = getInteger("Enter n: ");
     k = getInteger("Enter k: ");
     if (n >= 0 && k >= 0) {
+      if (n < k) {
+        cout << "n must be >= k" << endl;
+        continue;
+      }
       break;
     }
     cout << (n < 0 ? "Please enter positive n" : "Please enter positive k")
