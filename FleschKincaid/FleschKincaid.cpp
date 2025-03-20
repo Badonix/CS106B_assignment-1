@@ -65,7 +65,7 @@ void printData(fileDataT data) {
 
 void updateScannerOptions(TokenScanner &scanner) {
   scanner.ignoreWhitespace();
-  scanner.addWordCharacters("\"'-~");
+  scanner.addWordCharacters("'");
 }
 
 float calculateGrade(fileDataT data) {
@@ -80,13 +80,7 @@ fileDataT analyzeFile(TokenScanner scanner) {
   while (scanner.hasMoreTokens()) {
     string token = scanner.nextToken();
 
-    // There was an edge case, single " was remaining for some reason
-    if (token.length() == 1 && token[0] == '"') {
-      continue;
-    }
-
-    // If first character is a letter or starts with ", it means it's a word
-    if (isalpha(token[0]) || token[0] == '"') {
+    if ((isalpha(token[0]) && scanner.getTokenType(token) == WORD)) {
       syllables += countSyllables(token);
       words++;
       continue;
@@ -123,7 +117,10 @@ int countSyllables(string word) {
     }
   }
   // If last element is 'e' we decrement
-  if (count > 1 && tolower(word[word.length() - 1]) == 'e') {
+  // but second from last mustnt be vowel, for example words tree, bee have 1
+  // syllable
+  if (count > 1 && tolower(word[word.length() - 1]) == 'e' &&
+      vowels.find(tolower(word[word.length() - 2])) == string::npos) {
     count--;
   }
   return max(count, 1);
